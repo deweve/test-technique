@@ -24,8 +24,8 @@ type Mutation {
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
   register(signUpInput: SignUpInput!): UserDto!
-  setFavoriteToActivity(activityId: String!): ActivityDto!
-  unSetFavoriteToActivity(activityId: String!): ActivityDto!
+  setFavoriteActivity(activityId: String!): ActivityDto!
+  unSetFavoriteActivity(activityId: String!): ActivityDto!
 }
 
 type Query {

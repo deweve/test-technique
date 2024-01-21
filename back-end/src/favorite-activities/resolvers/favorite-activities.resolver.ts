@@ -16,7 +16,7 @@ export class FavoriteActivitiesResolver {
 
   @Mutation(() => ActivityDto)
   @UseGuards(AuthGuard)
-  async setFavoriteToActivity(
+  async setFavoriteActivity(
     @Context() context: any,
     @Args('activityId') activityId: string,
   ): Promise<ActivityDto> {
@@ -30,11 +30,11 @@ export class FavoriteActivitiesResolver {
 
   @Mutation(() => ActivityDto)
   @UseGuards(AuthGuard)
-  async unSetFavoriteToActivity(
+  async unSetFavoriteActivity(
     @Context() context: any,
     @Args('activityId') activityId: string,
   ): Promise<ActivityDto> {
-    this.favoriteActivityService.setActivityFavoriteToUser(
+    this.favoriteActivityService.unsetActivityFavoriteToUser(
       context.user.id,
       activityId,
     );

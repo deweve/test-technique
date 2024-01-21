@@ -27,8 +27,9 @@ export class FavoriteActivitiesService {
         .find({
           $or: orCondition,
         })
-        .find();
-      const checker = favoriteActivities.reduce((acc, { activity, user }) => {
+        .find()
+        .exec();
+      const checker = favoriteActivities.reduce((acc, { user, activity }) => {
         acc.add(`${activity._id}-${user._id}`);
         return acc;
       }, new Set<string>());
@@ -53,6 +54,7 @@ export class FavoriteActivitiesService {
     return this.favoriteActivityModel.create({
       user: userId,
       activity: activityId,
+      position: 1,
     });
   }
 
