@@ -10,25 +10,38 @@ import { Button, Grid, Group } from "@mantine/core";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useFavoriteActivityCrud } from "./favoriteActivityCrudHook";
 
 interface DiscoverProps {
   activities: GetActivitiesQuery["getActivities"];
 }
 
-export const getServerSideProps: GetServerSideProps<
-  DiscoverProps
-> = async () => {
+export const getServerSideProps: GetServerSideProps<DiscoverProps> = async ({
+  req,
+}) => {
+  const userConnected = !!req.headers.cookie;
   const response = await graphqlClient.query<
     GetActivitiesQuery,
     GetActivitiesQueryVariables
   >({
     query: GetActivities,
+    variables: { userConnected },
+    context: {
+      headers: {
+        Cookie: req.headers.cookie,
+      },
+    },
   });
   return { props: { activities: response.data.getActivities } };
 };
 
 export default function Discover({ activities }: DiscoverProps) {
   const { user } = useAuth();
+  const {
+    activities: activitiesToUse,
+    unsetFavoriteActivity,
+    setFavoriteActivity,
+  } = useFavoriteActivityCrud(activities);
 
   return (
     <>
@@ -44,9 +57,15 @@ export default function Discover({ activities }: DiscoverProps) {
         )}
       </Group>
       <Grid>
-        {activities.length > 0 ? (
+        {activitiesToUse.length > 0 ? (
           activities.map((activity) => (
-            <Activity activity={activity} key={activity.id} />
+            <Activity
+              activity={activity}
+              isFavorite={activity.isFavorite}
+              unsetFavoriteActivity={unsetFavoriteActivity}
+              setFavoriteActivity={setFavoriteActivity}
+              key={activity.id}
+            />
           ))
         ) : (
           <EmptyData />

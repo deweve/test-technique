@@ -6,5 +6,9 @@ export const graphqlClient = new ApolloClient({
     uri: "http://localhost:3000/graphql",
     credentials: "include",
   }),
+  defaultOptions: {
+    query: { fetchPolicy: "no-cache" },
+    watchQuery: { fetchPolicy: "no-cache" },
+  },
   ssrMode: typeof window === "undefined",
 });

@@ -1,14 +1,32 @@
 import { ActivityFragment } from "@/graphql/generated/types";
 import { useGlobalStyles } from "@/utils";
-import { Badge, Button, Card, Grid, Group, Image, Text } from "@mantine/core";
+import {
+  ActionIcon,
+  Badge,
+  Button,
+  Card,
+  Grid,
+  Group,
+  Image,
+  Text,
+} from "@mantine/core";
 import Link from "next/link";
+import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 
+type FavoriteProps =
+  | {
+      isFavorite: boolean;
+      setFavoriteActivity: (favoriteId: string) => void;
+      unsetFavoriteActivity: (favoriteId: string) => void;
+    }
+  | { isFavorite?: undefined };
 interface ActivityProps {
   activity: ActivityFragment;
 }
 
-export function Activity({ activity }: ActivityProps) {
+export function Activity(props: ActivityProps & FavoriteProps) {
   const { classes } = useGlobalStyles();
+  const { activity } = props;
 
   return (
     <Grid.Col span={4}>
@@ -25,6 +43,18 @@ export function Activity({ activity }: ActivityProps) {
           <Text weight={500} className={classes.ellipsis}>
             {activity.name}
           </Text>
+          {props.isFavorite !== undefined && (
+            <ActionIcon
+              color="red"
+              onClick={() => {
+                props.isFavorite
+                  ? props.unsetFavoriteActivity(activity.id)
+                  : props.setFavoriteActivity(activity.id);
+              }}
+            >
+              {props.isFavorite ? <IconHeartFilled /> : <IconHeart />}
+            </ActionIcon>
+          )}
         </Group>
 
         <Group mt="md" mb="xs">

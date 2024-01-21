@@ -10,17 +10,29 @@ import {
   GetLatestActivitiesQueryVariables,
 } from "@/graphql/generated/types";
 import GetLatestActivities from "@/graphql/queries/activity/getLatestActivities";
+import { useFavoriteActivityCrud } from "./favoriteActivityCrudHook";
 
 interface HomeProps {
   activities: GetLatestActivitiesQuery["getLatestActivities"];
 }
 
-export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
+export const getServerSideProps: GetServerSideProps<HomeProps> = async ({
+  req,
+  res,
+}) => {
+  const userConnected = !!req.headers.cookie;
+
   const response = await graphqlClient.query<
     GetLatestActivitiesQuery,
     GetLatestActivitiesQueryVariables
   >({
     query: GetLatestActivities,
+    variables: { userConnected },
+    context: {
+      headers: {
+        Cookie: req.headers.cookie,
+      },
+    },
   });
 
   return { props: { activities: response.data.getLatestActivities } };
@@ -28,6 +40,11 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
 
 export default function Home({ activities }: HomeProps) {
   const { classes } = useGlobalStyles();
+  const {
+    activities: activitiesToUse,
+    setFavoriteActivity,
+    unsetFavoriteActivity,
+  } = useFavoriteActivityCrud(activities);
 
   return (
     <>
@@ -54,7 +71,7 @@ export default function Home({ activities }: HomeProps) {
           ea voluptate velit esse quam nihil molestiae consequatur, vel illum
           qui dolorem eum fugiat quo voluptas nulla pariatur?
         </Text>
-        {activities.length > 0 && (
+        {activitiesToUse.length > 0 && (
           <>
             <Flex align="center" justify="space-between">
               <h2>Découvrez les dernières activités</h2>
@@ -71,8 +88,14 @@ export default function Home({ activities }: HomeProps) {
               </Link>
             </Flex>
             <Grid>
-              {activities.map((activity) => (
-                <Activity activity={activity} key={activity.id} />
+              {activitiesToUse.map((activity) => (
+                <Activity
+                  activity={activity}
+                  key={activity.id}
+                  isFavorite={activity.isFavorite}
+                  setFavoriteActivity={setFavoriteActivity}
+                  unsetFavoriteActivity={unsetFavoriteActivity}
+                />
               ))}
             </Grid>
           </>
