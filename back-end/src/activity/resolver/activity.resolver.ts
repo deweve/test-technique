@@ -1,9 +1,11 @@
-import { Resolver, Query, Mutation, Args, Context, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { ActivityService } from '../activity.service';
 import { ActivityMapper } from '../mapper/activity.mapper';
 import { ActivityDto, CreateActivityInput } from '../types';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
+import { CurrentUser } from 'src/auth/currentUser.decorator';
+import { UserDto } from 'src/user/types/user.dto';
 
 @Resolver('Activity')
 export class ActivityResolver {
@@ -25,9 +27,11 @@ export class ActivityResolver {
   }
 
   @Query(() => [ActivityDto])
-  @UseGuards(AuthGuard)
-  async getActivitiesByUser(@Context() context: any): Promise<ActivityDto[]> {
-    const activities = await this.activityService.findByUser(context.user!.id);
+  @UseGuards(JwtAuthGuard)
+  async getActivitiesByUser(
+    @CurrentUser() user: UserDto,
+  ): Promise<ActivityDto[]> {
+    const activities = await this.activityService.findByUser(user.id);
     return activities.map((activity) => this.activityMapper.convert(activity));
   }
 
@@ -58,13 +62,13 @@ export class ActivityResolver {
   }
 
   @Mutation(() => ActivityDto)
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   async createActivity(
-    @Context() context: any,
+    @CurrentUser() user: UserDto,
     @Args('createActivityInput') createActivityDto: CreateActivityInput,
   ): Promise<ActivityDto> {
     const activity = await this.activityService.create(
-      context.user!.id,
+      user.id,
       createActivityDto,
     );
     return this.activityMapper.convert(activity);

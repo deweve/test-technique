@@ -11,7 +11,10 @@ import {
 import { ActivityService } from 'src/activity/activity.service';
 import { ActivityMapper } from 'src/activity/mapper/activity.mapper';
 import { ActivityDto } from 'src/activity/types';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
+import { CurrentUser } from 'src/auth/currentUser.decorator';
+
+import { UserDto } from 'src/user/types/user.dto';
 import { FavoriteActivityMapper } from '../mapper/favoriteActivity.mapper';
 import { FavoriteActivitiesService } from '../services/favorite-activities.service';
 import { FavoriteActivityDto } from '../types/favoriteActivity.dto';
@@ -26,27 +29,24 @@ export class FavoriteActivitiesResolver {
   ) {}
 
   @Mutation(() => ActivityDto)
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   async setFavoriteActivity(
-    @Context() context: any,
+    @CurrentUser() user: UserDto,
     @Args('activityId') activityId: string,
   ): Promise<ActivityDto> {
-    this.favoriteActivityService.setActivityFavoriteToUser(
-      context.user.id,
-      activityId,
-    );
+    this.favoriteActivityService.setActivityFavoriteToUser(user.id, activityId);
     const activity = await this.activityService.findOne(activityId);
     return this.activityMapper.convert(activity);
   }
 
   @Mutation(() => ActivityDto)
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   async unSetFavoriteActivity(
-    @Context() context: any,
+    @CurrentUser() user: UserDto,
     @Args('activityId') activityId: string,
   ): Promise<ActivityDto> {
     this.favoriteActivityService.unsetActivityFavoriteToUser(
-      context.user.id,
+      user.id,
       activityId,
     );
     const activity = await this.activityService.findOne(activityId);
@@ -54,30 +54,30 @@ export class FavoriteActivitiesResolver {
   }
 
   @Query(() => [FavoriteActivityDto])
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   async getFavoriteActivities(
-    @Context() context: any,
+    @CurrentUser() user: UserDto,
   ): Promise<FavoriteActivityDto[]> {
     const favorites = await this.favoriteActivityService.getFavoriteActivities(
-      context.user.id,
+      user.id,
     );
     return favorites.map(this.favoriteActivityMapper.convert);
   }
 
   @Mutation(() => [FavoriteActivityDto])
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   async setPositionOfFavoriteActivity(
     @Args('favoriteActivityId') favoriteActivityId: string,
     @Args('position') position: number,
-    @Context() context: any,
+    @CurrentUser() user: UserDto,
   ): Promise<FavoriteActivityDto[]> {
     await this.favoriteActivityService.setFavoriteActivityToPosition(
       favoriteActivityId,
       position,
-      context.user.id,
+      user.id,
     );
     const favoriteActivities =
-      await this.favoriteActivityService.getFavoriteActivities(context.user.id);
+      await this.favoriteActivityService.getFavoriteActivities(user.id);
     return favoriteActivities.map((favoriteActivity) =>
       this.favoriteActivityMapper.convert(favoriteActivity),
     );

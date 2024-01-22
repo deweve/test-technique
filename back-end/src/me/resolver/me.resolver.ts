@@ -3,7 +3,8 @@ import { UserMapper } from '../../user/mapper/user.mapper';
 import { UserService } from '../../user/user.service';
 import { UserDto } from '../../user/types/user.dto';
 import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../../auth/auth.guard';
+import { JwtAuthGuard } from '../../auth/auth.guard';
+import { CurrentUser } from 'src/auth/currentUser.decorator';
 
 @Resolver('Me')
 export class MeResolver {
@@ -13,9 +14,8 @@ export class MeResolver {
   ) {}
 
   @Query(() => UserDto)
-  @UseGuards(AuthGuard)
-  async getMe(@Context() context: any): Promise<UserDto> {
-    const user = await this.userService.getById(context.user!.id);
-    return this.userMapper.convert(user);
+  @UseGuards(JwtAuthGuard)
+  async getMe(@CurrentUser() user: UserDto): Promise<UserDto> {
+    return user;
   }
 }
