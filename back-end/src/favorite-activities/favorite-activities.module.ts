@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ActivityModule } from 'src/activity/activity.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { UserModule } from 'src/user/user.module';
+import { FavoriteActivityMapper } from './mapper/favoriteActivity.mapper';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { FavoriteActivitiesResolver } from './resolvers/favorite-activities.resolver';
 import {
@@ -27,6 +28,7 @@ import { FavoriteActivitiesService } from './services/favorite-activities.servic
     FavoriteActivitiesService,
     FavoriteActivitiesResolver,
     ActivityResolver,
+    FavoriteActivityMapper,
   ],
 })
 export class FavoriteActivitiesModule {}
