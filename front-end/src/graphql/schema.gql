@@ -19,12 +19,20 @@ input CreateActivityInput {
   price: Int!
 }
 
+type FavoriteActivityDto {
+  activity: ActivityDto!
+  activityId: String!
+  favoritePosition: Int!
+  id: String!
+}
+
 type Mutation {
   createActivity(createActivityInput: CreateActivityInput!): ActivityDto!
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
   register(signUpInput: SignUpInput!): UserDto!
   setFavoriteActivity(activityId: String!): ActivityDto!
+  setPositionOfFavoriteActivity(favoriteActivityId: String!, position: Int!): [FavoriteActivityDto!]!
   unSetFavoriteActivity(activityId: String!): ActivityDto!
 }
 
@@ -34,6 +42,7 @@ type Query {
   getActivitiesByUser: [ActivityDto!]!
   getActivity(id: String!): ActivityDto!
   getCities: [String!]!
+  getFavoriteActivities: [FavoriteActivityDto!]!
   getLatestActivities: [ActivityDto!]!
   getMe: UserDto!
 }
