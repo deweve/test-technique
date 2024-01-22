@@ -11,8 +11,8 @@ import {
 import { ActivityService } from 'src/activity/activity.service';
 import { ActivityMapper } from 'src/activity/mapper/activity.mapper';
 import { ActivityDto } from 'src/activity/types';
-import { JwtAuthGuard } from 'src/auth/auth.guard';
-import { CurrentUser } from 'src/auth/currentUser.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
+import { CurrentUser } from 'src/auth/decorator/currentUser.decorator';
 
 import { UserDto } from 'src/user/types/user.dto';
 import { FavoriteActivityMapper } from '../mapper/favoriteActivity.mapper';

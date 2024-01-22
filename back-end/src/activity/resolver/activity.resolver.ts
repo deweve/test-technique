@@ -3,10 +3,10 @@ import { UseGuards } from '@nestjs/common';
 import { ActivityService } from '../activity.service';
 import { ActivityMapper } from '../mapper/activity.mapper';
 import { ActivityDto, CreateActivityInput } from '../types';
-import { JwtAuthGuard } from 'src/auth/auth.guard';
-import { CurrentUser } from 'src/auth/currentUser.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/auth.guard';
+import { CurrentUser } from 'src/auth/decorator/currentUser.decorator';
 import { UserDto } from 'src/user/types/user.dto';
-import { AdminGuard } from 'src/auth/admin.guard';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
 
 @Resolver('Activity')
 export class ActivityResolver {

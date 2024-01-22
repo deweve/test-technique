@@ -8,8 +8,8 @@ import * as bcrypt from 'bcrypt';
 import { UserMapper } from 'src/user/mapper/user.mapper';
 import { User } from 'src/user/schema/user.schema';
 import { UserDto } from 'src/user/types/user.dto';
-import { UserService } from '../user/user.service';
-import { SignInDto, SignInInput, SignUpInput } from './types';
+import { UserService } from '../../user/user.service';
+import { SignInDto, SignInInput, SignUpInput } from '../types';
 
 @Injectable()
 export class AuthService {

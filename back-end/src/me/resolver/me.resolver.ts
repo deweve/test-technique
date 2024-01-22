@@ -3,8 +3,8 @@ import { UserMapper } from '../../user/mapper/user.mapper';
 import { UserService } from '../../user/user.service';
 import { UserDto } from '../../user/types/user.dto';
 import { UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../../auth/auth.guard';
-import { CurrentUser } from 'src/auth/currentUser.decorator';
+import { JwtAuthGuard } from '../../auth/guards/auth.guard';
+import { CurrentUser } from 'src/auth/decorator/currentUser.decorator';
 
 @Resolver('Me')
 export class MeResolver {
