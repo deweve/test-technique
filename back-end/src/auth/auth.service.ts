@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { UserMapper } from 'src/user/mapper/user.mapper';
 import { User } from 'src/user/schema/user.schema';
 import { UserDto } from 'src/user/types/user.dto';
 import { UserService } from '../user/user.service';
@@ -15,6 +16,7 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private userMapper: UserMapper,
   ) {}
 
   async signIn({ email, password }: SignInInput): Promise<SignInDto> {
@@ -24,12 +26,7 @@ export class AuthService {
     if (!isSamePassword)
       throw new HttpException('Wrong credentials provided', 400);
 
-    const payload: UserDto = {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    };
+    const payload: UserDto = this.userMapper.convert(user);
     const token = await this.jwtService.signAsync(payload);
 
     await this.userService.updateToken(user.id, token);

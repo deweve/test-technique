@@ -67,5 +67,6 @@ type UserDto {
   email: String!
   firstName: String!
   id: String!
+  isAdmin: Boolean!
   lastName: String!
 }

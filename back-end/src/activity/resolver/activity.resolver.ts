@@ -6,6 +6,7 @@ import { ActivityDto, CreateActivityInput } from '../types';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
 import { CurrentUser } from 'src/auth/currentUser.decorator';
 import { UserDto } from 'src/user/types/user.dto';
+import { AdminGuard } from 'src/auth/admin.guard';
 
 @Resolver('Activity')
 export class ActivityResolver {
@@ -62,7 +63,7 @@ export class ActivityResolver {
   }
 
   @Mutation(() => ActivityDto)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminGuard)
   async createActivity(
     @CurrentUser() user: UserDto,
     @Args('createActivityInput') createActivityDto: CreateActivityInput,
