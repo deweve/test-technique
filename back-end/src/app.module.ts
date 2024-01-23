@@ -11,6 +11,7 @@ import { SeedService } from './seed/seed.service';
 import { UserModule } from './user/user.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { FavoriteActivitiesModule } from './favorite-activities/favorite-activities.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
       driver: ApolloDriver,
       autoSchemaFile: 'schema.gql',
       sortSchema: true,
+      fieldResolverEnhancers: ['guards'],
       buildSchemaOptions: { numberScalarMode: 'integer' },
       context: ({ req, res }: { req: Request; res: Response }) => ({
         req,
@@ -35,6 +37,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
     MeModule,
     ActivityModule,
     SeedModule,
+    FavoriteActivitiesModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],

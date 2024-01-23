@@ -6,6 +6,7 @@ type ActivityDto {
   city: String!
   description: String!
   id: String!
+  isFavorite: Boolean!
   name: String!
   owner: UserDto!
   price: Int!
@@ -23,6 +24,8 @@ type Mutation {
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
   register(signUpInput: SignUpInput!): UserDto!
+  setFavoriteToActivity(activityId: String!): ActivityDto!
+  unSetFavoriteToActivity(activityId: String!): ActivityDto!
 }
 
 type Query {
